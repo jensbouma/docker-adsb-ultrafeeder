@@ -106,7 +106,8 @@ services:
       - /opt/adsb/ultrafeeder/globe_history:/var/globe_history
       - /opt/adsb/ultrafeeder/graphs1090:/var/lib/collectd
       - /proc/diskstats:/proc/diskstats:ro
-      - /dev:/dev:ro
+    devices:
+      - '/dev/bus/usb/004/002:/dev/bus/usb/004/002'         # USB devices
     tmpfs:
       - /run:exec,size=256M
       - /tmp:size=128M
