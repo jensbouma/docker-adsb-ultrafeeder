@@ -24,6 +24,9 @@ source /scripts/interpret_ultrafeeder_config
 
 s6wrap=(s6wrap --quiet --timestamps --prepend="$SCRIPT_NAME")
 
+# run with slightly lower priority
+renice 5 $$ || true
+
 "${s6wrap[@]}" --args echo "Started as an s6 service"
 
 MLAT_CMD="/usr/bin/mlat-client"
@@ -50,6 +53,8 @@ then
     "${s6wrap[@]}" --args echo "ERROR: either UUID or MLAT_USER must be defined - MLAT will be disabled."
     stop_service
 fi
+
+mkdir -p /run/mlat-client
 
 function check_gpsd() {
     if (( GPSD == 0 )) || ! [[ -f /run/readsb/gpsd.json ]]; then
@@ -275,6 +280,8 @@ do
     else
         "${s6wrap[@]}" --args echo "WARNING: UUID is not defined, proceeding without UUID"
     fi
+
+    MLAT_PARAM+=(--stats-json "/run/mlat-client/${params[0]}:${params[1]}.json")
 
     # Now add the extra_args, if any:
     [[ -n "${extra_args}" ]] && MLAT_PARAM+=("${extra_args}") || true

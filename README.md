@@ -10,7 +10,7 @@
         - [Mandatory Parameters](#mandatory-parameters)
         - [Optional Parameters](#optional-parameters)
     - [Getting ADSB data to the Ultrafeeder](#getting-adsb-data-to-the-ultrafeeder)
-      - [Connecting to a SDR or other hardware device](#connecting-to-a-sdr-or-other-hardware-device)
+      - [Connecting to an SDR or other hardware device](#connecting-to-a-sdr-or-other-hardware-device)
         - [Mandatory parameters](#mandatory-parameters-1)
         - [Optional/Additional Parameters](#optionaladditional-parameters)
         - [AutoGain for RTLSDR Devices](#autogain-for-rtlsdr-devices)
@@ -59,7 +59,7 @@
 
 ## Introduction
 
-`adsb-ultrafeeder™` is a ADS-B data collector container that can be used to:
+`adsb-ultrafeeder™` is an ADS-B data collector container that can be used to:
 
 - retrieve ADS-B data from your SDR or other device
 - display it on a local map, including options to show tracks, heatmaps, and system performance graphs
@@ -135,7 +135,7 @@ The general principle behind the port numbering, is:
 | `9274/tcp`                  | Prometheus web interface with data from `Telegraf` |
 | `80/tcp`                    | Tar1090 (map) web interface                        |
 
-Any of these ports can be made available to the host system by using the `ports:` directive in your `docker-compose.yml`. The container's web interface is rendered to port `80` in the container. This can me mapped to a port on the host using the docker-compose `ports` directive. In the example [`docker-compose.yml`](docker-compose.yml) file, the container's Tar1090 interface is mapped to `8080` on the host system, and ports `9273-9274` are exposed as-is:
+Any of these ports can be made available to the host system by using the `ports:` directive in your `docker-compose.yml`. The container's web interface is rendered to port `80` in the container. This can be mapped to a port on the host using the docker-compose `ports` directive. In the example [`docker-compose.yml`](docker-compose.yml) file, the container's Tar1090 interface is mapped to `8080` on the host system, and ports `9273-9274` are exposed as-is:
 
 ```yaml
     ports:
@@ -219,12 +219,12 @@ The following parameters must be set (mandatory) for the container to function:
 
 There are two ways to provide ADSB data to the Ultrafeeder:
 
-- provide the container with access to a SDR or other hardware device that collects ADSB data
+- provide the container with access to an SDR or other hardware device that collects ADSB data
 - allow the container to connect to a ADSB data source in Beast, Raw, or SBS format
 
 These methods are not mutually exclusive - you can use both at the same time if you want.
 
-#### Connecting to a SDR or other hardware device
+#### Connecting to an SDR or other hardware device
 
 If you want to connect your SDR to the container, here's how to do that:
 
@@ -278,7 +278,7 @@ docker exec -it ultrafeeder /usr/local/bin/autogain1090 reset
 
 #### Connecting to external ADSB data sources
 
-In addition to (or instead of) connecting to a SDR or hardware device to get ADSB data, the container also supports ingesting or sending data from a TCP port. Here are some parameters that you need to configure if you want to make this happen:
+In addition to (or instead of) connecting to an SDR or hardware device to get ADSB data, the container also supports ingesting or sending data from a TCP port. Here are some parameters that you need to configure if you want to make this happen:
 
 ##### All-in-One Configuration using `ULTRAFEEDER_CONFIG`
 
@@ -376,7 +376,7 @@ There are many optional parameters relating to the ingestion of data and the gen
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------- | ------------- |
 | `READSB_NET_API_PORT`                 | <https://github.com/wiedehopf/readsb/blob/dev/README-json.md#--net-api-port-query-formats>                                                                                                                                                                                     | `--net-api-port=<ports>`                | `30152`       |
 | `READSB_ENABLE_API`                   | Adds nginx proxies api at /re-api. Use with extraargs --write-json-globe-index --tar1090-use-api to get fast map with many planes | various | disabled |
-| `READSB_NET_BEAST_REDUCE_INTERVAL`    | BeastReduce position update interval, longer means less data (valid range: `0.000` - `14.999`)                                                                                                                                                                                 | `--net-beast-reduce-interval=<seconds>` | `1.0`         |
+| `READSB_NET_BEAST_REDUCE_INTERVAL`    | BeastReduce position update interval, longer means less data (valid range: `0.000` - `14.999`)                                                                                                                                                                                 | `--net-beast-reduce-interval=<seconds>` | `0.5`         |
 | `READSB_NET_BEAST_REDUCE_FILTER_DIST` | Restrict beast-reduce output to aircraft in a radius of X nmi                                                                                                                                                                                                                  | `--net-beast-reduce-filter-dist=<nmi>`  | Unset         |
 | `READSB_NET_BEAST_REDUCE_FILTER_ALT`  | Restrict beast-reduce output to aircraft below X ft                                                                                                                                                                                                                            | `--net-beast-reduce-filter-alt=<ft>`    | Unset         |
 | `READSB_NET_BR_OPTIMIZE_FOR_MLAT`     | BeastReduce: Keep messages relevant to mlat-client                                                                                                                                                                                                                             | `--net-beast-reduce-optimize-for-mlat`  | Unset         |
@@ -508,7 +508,7 @@ Generally, there is little else to configure, but there are a few parameters tha
 
 The Container creates an interactive web interface displaying the aircraft, based on Wiedehopf's widely used [tar1090](https://github.com/wiedehopf/tar1090) software.
 
-The web interface is rendered to port `80` in the container. This can me mapped to a port on the host using the docker-compose `ports` directive.
+The web interface is rendered to port `80` in the container. This can be mapped to a port on the host using the docker-compose `ports` directive.
 
 All of the variables below are optional.
 
@@ -527,7 +527,8 @@ Note - due to design limitations of `readsb`, the `tar1090` graphical interface 
 | `GZIP_LVL`                 | `1`-`9` are valid, lower lvl: less CPU usage, higher level: less network bandwidth used when loading the page                                                                                      | `3`                  |
 | `PTRACKS`                  | Shows the last `$PTRACKS` hours of traces you have seen at the `?pTracks` URL                                                                                                                      | `8`                  |
 | `TAR1090_FLIGHTAWARELINKS` | Set to `true` to enable FlightAware links in the web interface                                                                                                                                     | `null`               |
-| `TAR1090_ENABLE_AC_DB`     | Set to `true` to enable extra information, such as aircraft type and registration, to be included in in `aircraft.json` output. Will use more memory; use caution on older Pis or similar devices. | `false`              |
+| `TAR1090_ENABLE_AC_DB`     | Set to `true` to enable extra information, such as aircraft type and registration, to be included in in `aircraft.json` output. Will use more 50 MB extra memory                                   | `false`              |
+| `TAR1090_DB_LONGTYPE`      | Set to `false` to remove the "desc", "ownOp" and "year" fields from `aircraft.json` when AC_DB is enabled.                                                                                         | `true`              |
 | `HEYWHATSTHAT_PANORAMA_ID` | Your `heywhatsthat.com` panorama ID. See <https://github.com/wiedehopf/tar1090#heywhatsthatcom-range-outline> (will reveal exact location in the webinterface)                                     |                      |
 | `HEYWHATSTHAT_ALTS`        | Comma separated altitudes for multiple outlines. Use no units or `ft` for feet, `m` for meters, or `km` for kilometers. Only integer numbers are accepted, no decimals please                      | `12192m` (=40000 ft) |
 | `HTTP_ACCESS_LOG`          | Optional. Set to `true` to display HTTP server access logs.                                                                                                                                        | `false`              |
@@ -624,31 +625,35 @@ Note - due to design limitations of `readsb`, the `tar1090` graphical interface 
 
 #### `graphs1090` Environment Parameters
 
-| Variable                                     | Description                                                                                                                               | Default   |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| `GRAPHS1090_DARKMODE`                        | If set to `true`, `graphs1090` will be rendered in "dark mode".                                                                           | Unset     |
-| `GRAPHS1090_RRD_STEP`                        | Interval in seconds to feed data into RRD files.                                                                                          | `60`      |
-| `GRAPHS1090_SIZE`                            | Set graph size, possible values: `small`, `default`, `large`, `huge`, `custom`.                                                           | `default` |
-| `GRAPHS1090_ALL_LARGE`                       | Make the small graphs as large as the big ones by setting to `yes`.                                                                       | `no`      |
-| `GRAPHS1090_FONT_SIZE`                       | Font size (relative to graph size).                                                                                                       | `10.0`    |
-| `GRAPHS1090_MAX_MESSAGES_LINE`               | Set to `true` to draw a reference line at the maximum message rate.                                                                       | Unset     |
-| `GRAPHS1090_LARGE_WIDTH`                     | Defines the width of the larger graphs.                                                                                                   | `1096`    |
-| `GRAPHS1090_LARGE_HEIGHT`                    | Defines the height of the larger graphs.                                                                                                  | `235`     |
-| `GRAPHS1090_SMALL_WIDTH`                     | Defines the width of the smaller graphs.                                                                                                  | `619`     |
-| `GRAPHS1090_SMALL_HEIGHT`                    | Defines the height of the smaller graphs.                                                                                                 | `324`     |
-| `GRAPHS1090_DISK_DEVICE`                     | Defines which disk device (`mmc0`, `sda`, `sdc`, etc) is shown. Leave empty for default device                                            | Unset     |
-| `GRAPHS1090_ETHERNET_DEVICE`                 | Defines which (wired) ethernet device (`eth0`, `enp0s`, etc) is shown. Leave empty for default device                                     | Unset     |
-| `GRAPHS1090_WIFI_DEVICE`                     | Defines which (wireless) WiFi device (`wlan0`, `wlp3s0`, etc) is shown. Leave empty for default device                                    | Unset     |
-| `GRAPHS1090_DISABLE`                         | Set to `true` to disable the entire GRAPHS1090 web page and associated data collection                                                    | Unset     |
-| `GRAPHS1090_DISABLE_CHART_CPU`               | Set to `true` to disable the GRAPHS1090 CPU chart                                                                                         | Unset     |
-| `GRAPHS1090_DISABLE_CHART_TEMP`              | Set to `true` to disable the GRAPHS1090 Temperature chart                                                                                 | Unset     |
-| `GRAPHS1090_DISABLE_CHART_MEMORY`            | Set to `true` to disable the GRAPHS1090 Memory Utilization chart                                                                          | Unset     |
-| `GRAPHS1090_DISABLE_CHART_NETWORK_BANDWIDTH` | Set to `true` to disable the GRAPHS1090 Network Bandwidth chart                                                                           | Unset     |
-| `GRAPHS1090_DISABLE_CHART_DISK_USAGE`        | Set to `true` to disable the GRAPHS1090 Disk Usage chart                                                                                  | Unset     |
-| `GRAPHS1090_DISABLE_CHART_DISK_IOPS`         | Set to `true` to disable the GRAPHS1090 Disk IOPS chart                                                                                   | Unset     |
-| `GRAPHS1090_DISABLE_CHART_DISK_BANDWIDTH`    | Set to `true` to disable the GRAPHS1090 Disk Bandwidth chart                                                                              | Unset     |
-| `ENABLE_AIRSPY`                              | Optional, set to any non-empty value if you want to enable the special AirSpy graphs. See below for additional configuration requirements | Unset     |
-| `URL_AIRSPY`                                 | Optional, set to the URL where the airspy stats are available, for example `http://airspy_adsb`                                           | Unset     |
+| Variable                                     | Description                                                                                                                               | Default        |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `GRAPHS1090_DARKMODE`                        | If set to `true`, `graphs1090` will be rendered in "dark mode".                                                                           | Unset          |
+| `GRAPHS1090_RRD_STEP`                        | Interval in seconds to feed data into RRD files.                                                                                          | `60`           |
+| `GRAPHS1090_SIZE`                            | Set graph size, possible values: `small`, `default`, `large`, `huge`, `custom`.                                                           | `custom`       |
+| `GRAPHS1090_ALL_LARGE`                       | Make the small graphs as large as the big ones by setting to `yes`.                                                                       | `no`           |
+| `GRAPHS1090_FONT_SIZE`                       | Font size (relative to graph size).                                                                                                       | `10.0`         |
+| `GRAPHS1090_MAX_MESSAGES_LINE`               | Set to `true` to draw a reference line at the maximum message rate.                                                                       | Unset          |
+| `GRAPHS1090_LARGE_WIDTH`                     | Defines the width of the larger graphs. (if size is set to custom)                                                                        | `1096`         |
+| `GRAPHS1090_LARGE_HEIGHT`                    | Defines the height of the larger graphs. (if size is set to custom)                                                                       | `235`          |
+| `GRAPHS1090_SMALL_WIDTH`                     | Defines the width of the smaller graphs. (if size is set to custom)                                                                       | `619`          |
+| `GRAPHS1090_SMALL_HEIGHT`                    | Defines the height of the smaller graphs. (if size is set to custom)                                                                      | `324`          |
+| `GRAPHS1090_DISK_DEVICE`                     | Defines which disk device (`mmc0`, `sda`, `sdc`, etc) is shown. Leave empty for default device                                            | Unset          |
+| `GRAPHS1090_ETHERNET_DEVICE`                 | Defines which (wired) ethernet device (`eth0`, `enp0s`, etc) is shown. Leave empty for default device                                     | Unset          |
+| `GRAPHS1090_WIFI_DEVICE`                     | Defines which (wireless) WiFi device (`wlan0`, `wlp3s0`, etc) is shown. Leave empty for default device                                    | Unset          |
+| `GRAPHS1090_DISABLE`                         | Set to `true` to disable the entire GRAPHS1090 web page and associated data collection                                                    | Unset          |
+| `GRAPHS1090_DISABLE_CHART_CPU`               | Set to `true` to disable the GRAPHS1090 CPU chart                                                                                         | Unset          |
+| `GRAPHS1090_DISABLE_CHART_TEMP`              | Set to `true` to disable the GRAPHS1090 Temperature chart                                                                                 | Unset          |
+| `GRAPHS1090_DISABLE_CHART_MEMORY`            | Set to `true` to disable the GRAPHS1090 Memory Utilization chart                                                                          | Unset          |
+| `GRAPHS1090_DISABLE_CHART_NETWORK_BANDWIDTH` | Set to `true` to disable the GRAPHS1090 Network Bandwidth chart                                                                           | Unset          |
+| `GRAPHS1090_DISABLE_CHART_DISK_USAGE`        | Set to `true` to disable the GRAPHS1090 Disk Usage chart                                                                                  | Unset          |
+| `GRAPHS1090_DISABLE_CHART_DISK_IOPS`         | Set to `true` to disable the GRAPHS1090 Disk IOPS chart                                                                                   | Unset          |
+| `GRAPHS1090_DISABLE_CHART_DISK_BANDWIDTH`    | Set to `true` to disable the GRAPHS1090 Disk Bandwidth chart                                                                              | Unset          |
+| `GRAPHS1090_WWW_TITLE`                       | Set title for the web page (displayed in the browser title or tab bar)                                                                    | `graphs1090`   |
+| `GRAPHS1090_WWW_HEADER`                      | Set header text for the web page                                                                                                          | `Perf. Graphs` |
+| `GRAPHS1090_HIDE_SYSTEM`                     | Hide the system graphs and don't render them, don't collect system data                                                                   | `no`           |
+| `GRAPHS1090_DEFAULT_APPEND`                  | Append to /etc/default/graphs1090, see <https://github.com/wiedehopf/graphs1090/blob/master/default>                                      | Unset          |
+| `ENABLE_AIRSPY`                              | Optional, set to any non-empty value if you want to enable the special AirSpy graphs. See below for additional configuration requirements | Unset          |
+| `URL_AIRSPY`                                 | Optional, set to the URL where the airspy stats are available, for example `http://airspy_adsb`                                           | Unset          |
 
 #### Enabling UAT data
 
@@ -663,7 +668,7 @@ ADS-B over UAT data is transmitted in the 978 MHz band, and this is used in the 
 
 2. Install the [`docker-dump978` container](https://github.com/sdr-enthusiasts/docker-dump978). Note - only containers downloaded/deployed on/after Feb 8, 2023 will work.
 
-Note that you \*_must_- configure `URL_978` to point at a working skyaware978 website with `aircraft.json` data feed. This means that the URL `http://dump978/skyaware978/data/aircraft.json` must return valid JSON data to this `tar1090` container.
+Note that you *must* configure `URL_978` to point at a working skyaware978 website with `aircraft.json` data feed. This means that the URL `http://dump978/skyaware978/data/aircraft.json` must return valid JSON data to this `tar1090` container.
 
 #### Enabling AirSpy graphs
 
@@ -750,10 +755,10 @@ The feature assumes that you have mapped `/var/lib/collectd` to a volume (to ens
 ...
 ```
 
-| Environment Variable              | Purpose                                                                                     | Default |
-| --------------------------------- | ------------------------------------------------------------------------------------------- | ------- |
-| `GRAPHS1090_REDUCE_IO=`           | Optional Set to `true` to reduce the write cycles for `graphs1090`                          | Unset   |
-| `GRAPHS1090_REDUCE_IO_FLUSH_IVAL` | Interval (in secs) over which the `graphs1090` data is written back to non-volatile storage | `3600`  |
+| Environment Variable              | Purpose                                                                                        | Default |
+| --------------------------------- | ---------------------------------------------------------------------------------------------- | ------- |
+| `GRAPHS1090_REDUCE_IO=`           | Optional Set to `true` to reduce the write cycles for `graphs1090`                             | Unset   |
+| `GRAPHS1090_REDUCE_IO_FLUSH_IVAL` | Interval (i.e. 1h, 6h, 24h, 1d, 2d) writing `graphs1090` data back to non-volatile storage     | `1d`    |
 
 ### `timelapse1090` Configuration
 
@@ -777,7 +782,7 @@ For this to work, you should install and configure GPSD to work on your host mac
 
 ```bash
 sudo apt update && sudo apt install -y gpsd
-cat < EOM | sudo tee /etc/default/gpsd
+cat << EOM | sudo tee /etc/default/gpsd
 # Devices gpsd should collect to at boot time.
 # They need to be read/writeable, either by user gpsd or the group dialout.
 DEVICES="/dev/ttyACM0"
@@ -786,7 +791,7 @@ GPSD_OPTIONS="-G"
 # Automatically hot add/remove USB GPS devices via gpsdctl
 USBAUTO="true"
 EOM
-cat < EOM | sudo tee /lib/systemd/system/gpsd.socket
+cat << EOM | sudo tee /lib/systemd/system/gpsd.socket
 [Unit]
 Description=GPS (Global Positioning System) Daemon Sockets
 
@@ -832,13 +837,24 @@ If you have any issues, readsb will use verbose output if you add the `GPSD_DEBU
 
 ### Optional parameters regulating the restart of `mlat-client` when the location changes
 
-The following parameters are all optional and are subject to change. You don't need to set them unless you want to change the default behavior:
+The following parameters are all optional and are subject to change.  These variables should be added to the environment section of your docker-compose.yml. They will not work if entered into the .env file. You don't need to set them unless you want to change the default behavior.
 
 | Environment Variable | Purpose | Default |
 | -------------------- | ------- | ------- |
 | `GPSD_MIN_DISTANCE` | Distance (in meters) that your station must move before it's considered moving (maximum 40 meters) | `20` (meters) |
 | `GPSD_MLAT_WAIT` | The wait period (in seconds) your station must be stationary before mlat is started (minimum 90 seconds) | `90` (seconds) |
 | `GPSD_CHECK_INTERVAL` | How often the container checks for updated location information. (minimum 5 seconds) | `30` (seconds) |
+
+See example below:
+
+```yaml
+    environment:
+    ...
+      - GPSD_MIN_DISTANCE=20
+      - GPSD_MLAT_WAIT=90
+      - GPSD_CHECK_INTERVAL=30
+    ...
+```
 
 ## Web Pages
 
@@ -925,6 +941,19 @@ If you want to use `ultrafeeder` _only_ as a SDR decoder but without any mapping
 - in the `ULTRAFEEDER_CONFIG` parameter, remove any entry that starts with `mlat` or `mlathub`. This will prevent any `mlat-client`s or `mlathub` instances to be launched. If you still want to connect the `mlat-client`(s) to external MLAT servers but you don't want to run the overhead of a MLATHUB, you can leave any entries starting with `mlat` in the `ULTRAFEEDER_CONFIG` parameter, and set `MLATHUB_DISABLE=true`
 - Set the parameter `TAR1090_DISABLE=true`. This will prevent the `nginx` webserver and any websites to be launched and no `collectd` (graphs1090) or `rrd` (ADSB message history) data to be collected or retained.
 - Make sure to use `ghcr.io/sdr-enthusiasts/docker-adsb-ultrafeeder:latest` and specifically NOT the `ghcr.io/sdr-enthusiasts/docker-adsb-ultrafeeder:telegraf` label as Telegraf adds a LOT of resource use to the container
+
+## Offline maps
+
+There is the option to use some basic offline maps limited in zoom:
+
+- Download  the tiles (don't install tar1090): <https://github.com/wiedehopf/adsb-wiki/wiki/offline-map-tiles-tar1090>
+- Add a volume mapping so the container can access the tiles:
+
+```yaml
+    volumes:
+        - /usr/local/share/osm_tiles_offline:/usr/local/share/osm_tiles_offline
+```
+
 
 ## Logging
 
